@@ -1,7 +1,9 @@
 package main
 
 import (
+	"bytes"
 	"crypto/tls"
+	"io/ioutil"
 	"log"
 	"net"
 	"net/http"
@@ -16,6 +18,7 @@ const (
 	headerContentLength  = "Content-Length"
 	headerGRPCMessage    = "Grpc-Message"
 	headerGRPCStatusCode = "Grpc-Status"
+	headerUseInsecure    = "Grpc-Insecure"
 
 	defaultClientTimeout = time.Second * 60
 )
@@ -67,7 +70,8 @@ func NewProxy() *httputil.ReverseProxy {
 	return p
 }
 
-func (t Transport) director(r *http.Request) {}
+func (t Transport) director(r *http.Request) {
+}
 
 /*
   RoundTrip handles processing the incoming request
@@ -83,10 +87,10 @@ func (t Transport) RoundTrip(r *http.Request) (*http.Response, error) {
 
 	client := t.HTTPClient
 	if isGRPC {
-		if r.URL.Scheme == "https" {
-			client = t.H2Client
-		} else {
+		if r.Header.Get(headerUseInsecure) != "" {
 			client = t.H2NoTLSClient
+		} else {
+			client = t.H2Client
 		}
 	}
 
@@ -98,7 +102,15 @@ func (t Transport) RoundTrip(r *http.Request) (*http.Response, error) {
 	resp, err := client.Do(r)
 	if err != nil {
 		log.Printf("unable to do request err=[%s]", err)
-		return nil, err
+
+		buff := bytes.NewBuffer(nil)
+		buff.WriteString(err.Error())
+		resp = &http.Response{
+			StatusCode: 502,
+			Body:       ioutil.NopCloser(buff),
+		}
+
+		return resp, nil
 	}
 
 	if isGRPC {
