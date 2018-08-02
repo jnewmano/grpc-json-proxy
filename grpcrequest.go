@@ -17,8 +17,11 @@ const (
 func modifyRequestToJSONgRPC(r *http.Request) *http.Request {
 	// https://github.com/grpc/grpc/blob/master/doc/PROTOCOL-HTTP2.md
 
+	var body []byte
 	// read body so we can add the grpc prefix
-	body, _ := ioutil.ReadAll(r.Body)
+	if r.Body != nil {
+		body, _ = ioutil.ReadAll(r.Body)
+	}
 
 	b := make([]byte, 0, len(body)+5)
 	buff := bytes.NewBuffer(b)
@@ -46,9 +49,6 @@ func modifyRequestToJSONgRPC(r *http.Request) *http.Request {
 }
 
 func isJSONGRPC(r *http.Request) bool {
-	if r.Body == nil {
-		return false
-	}
 
 	h := r.Header.Get("Content-Type")
 
