@@ -1,6 +1,6 @@
-# pm-grpc
+# grpc-json-proxy
 
-PM GRPC is a proxy which allows HTTP API tools like Postman to interact with gRPC servers.
+GRPC JSON is a proxy which allows HTTP API tools like Postman to interact with gRPC servers.
 
 ## Requirements
 - grpc+json codec must be enabled on the grpc server
