@@ -12,7 +12,7 @@ Register a JSON codec with the gRPC server. In Go, it can be automatically regis
 
 `import _"github.com/jnewmano/grpc-json-proxy-codec"`
 
-2. Run the grpc-json-proxy.
+2. Run the grpc-json-proxy. Download pre-built binaries from https://github.com/jnewmano/grpc-json-proxy/releases/ or build from source:
 
 `go get -u github.com/jnewmano/grpc-json-proxy`
 `grpc-json-proxy`
