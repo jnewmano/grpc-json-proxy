@@ -10,7 +10,7 @@ Configuration of the proxy and its dependencies is a three step process.
 
 Register a JSON codec with the gRPC server. In Go, it can be automatically registered simple by adding the following import:
 
-`import _"github.com/jnewmano/grpc-json-proxy-codec"`
+`import _"github.com/jnewmano/grpc-json-proxy/codec"`
 
 2. Run the grpc-json-proxy. Download pre-built binaries from https://github.com/jnewmano/grpc-json-proxy/releases/ or build from source:
 
