@@ -1,4 +1,4 @@
-module github.com/chai-nadig/grpc-json-proxy
+module github.com/jnewmano/grpc-json-proxy
 
 require (
 	github.com/golang/protobuf v1.3.1
