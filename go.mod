@@ -1,8 +1,8 @@
 module github.com/jnewmano/grpc-json-proxy
 
 require (
-	github.com/golang/protobuf v1.2.0
-	golang.org/x/net v0.0.0-20180826012351-8a410e7b638d
-	golang.org/x/text v0.0.0-20180617084112-5cec4b58c438 // indirect
-	google.golang.org/grpc v1.14.0
+	github.com/golang/protobuf v1.3.1
+	golang.org/x/net v0.0.0-20190514140710-3ec191127204
+	golang.org/x/text v0.3.2 // indirect
+	google.golang.org/grpc v1.20.1
 )
