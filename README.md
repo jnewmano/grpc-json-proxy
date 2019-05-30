@@ -14,7 +14,7 @@ Register a JSON codec with the gRPC server. In Go, it can be automatically regis
 
 If you're using `gogo/protobuf` as your protobuf backend, import the following:
 
-`import _"github.com/jnewmano/grpc-json-proxy/gogoproto/codec"`
+`import _"github.com/jnewmano/grpc-json-proxy/gogoprotobuf/codec"`
 
 2. Run the grpc-json-proxy. Download pre-built binaries from https://github.com/jnewmano/grpc-json-proxy/releases/ or build from source:
 
