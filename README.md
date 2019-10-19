@@ -21,6 +21,12 @@ If you're using `gogo/protobuf` as your protobuf backend, import the following:
 `go get -u github.com/jnewmano/grpc-json-proxy`
 `grpc-json-proxy`
 
+Other way, you can simply use `grpc-json-proxy` docker image out of the box:
+
+```bash
+docker run -it -p 7001:7001 vincenthcui/grpc-json-proxy
+```
+
 3. Configure Postman to send requests through the proxy.
 Postman -> Preferences -> Proxy -> Global Proxy
 
@@ -37,6 +43,7 @@ Setup your Postman gRPC request with the following:
 1. Optionally add a Grpc-Insecure header set to true for an insecure connection.
 1. Set the request body to appropriate JSON for the message. For reference, generated Go code includes JSON tags on the generated message structs.
 
+
 For example:
 
 ![Postman Example Request](https://cdn-images-1.medium.com/max/1600/1*npRlBiKxuJ5KMnnk0F5n6g.png)
@@ -44,3 +51,12 @@ For example:
 
 
 Inspired by Johan Brandhorst's [grpc-json](https://jbrandhorst.com/post/grpc-json/)
+
+### Host accessibility
+
+If you use docker image to run grpc-json-proxy server, and want to access grpc via loopback address `127.0.0.1`, you should pay attention to docker network accessibility.
+
+1. use `host.docker.internal` instead of `127.0.0.1` in Linux.
+2. use `docker.for.mac.host.internal` instead of `127.0.0.1` in MacOS and with Docker for Mac 17.12 or above.
+
+See: https://docs.docker.com/docker-for-mac/networking/#use-cases-and-workarounds
