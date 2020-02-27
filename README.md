@@ -19,6 +19,7 @@ If you're using `gogo/protobuf` as your protobuf backend, import the following:
 2. Run the grpc-json-proxy. Download pre-built binaries from https://github.com/jnewmano/grpc-json-proxy/releases/ or build from source:
 
 `go get -u github.com/jnewmano/grpc-json-proxy`
+
 `grpc-json-proxy`
 
 3. Configure Postman to send requests through the proxy.
