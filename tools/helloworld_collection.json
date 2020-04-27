@@ -1,0 +1,52 @@
+{
+  "info": {
+    "name": "Hello World gRPC JSON API",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+    "description": "## Messages\n\n#### helloworld.HelloReply\n\nThe response message containing the greetings\n\n| Field | Type | Description |\n| ----- | ---- | ----------- |\n| message | string |  |\n\n#### helloworld.HelloRequest\n\nThe request message containing the user's name.\n\n| Field | Type | Description |\n| ----- | ---- | ----------- |\n| name | string |  |\n\n"
+  },
+  "item": [
+    {
+      "name": "helloworld.proto",
+      "description": "",
+      "item": [
+        {
+          "name": "helloworld.Greeter",
+          "description": "The greeting service definition.",
+          "items": [
+            {
+              "name": "SayHello",
+              "request": {
+                "description": "Sends a \"greeting\"\n\n\n\nRequest Message: `helloworld.HelloRequest`\n\nResponse Message: `helloworld.HelloReply`\n",
+                "method": "POST",
+                "header": [
+                  {
+                    "key": "Content-Type",
+                    "value": "application/grpc+json"
+                  },
+                  {
+                    "key": "Grpc-Insecure",
+                    "value": "{{grpcInsecure}}"
+                  }
+                ],
+                "url": {
+                  "raw": "{{baseURL}}/helloworld.Greeter/SayHello",
+                  "host": [
+                    "{{baseURL}}"
+                  ],
+                  "path": [
+                    "helloworld.Greeter",
+                    "SayHello"
+                  ]
+                },
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"name\": \"\"\n}"
+                }
+              }
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}

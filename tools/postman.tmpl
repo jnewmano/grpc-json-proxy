@@ -1,0 +1,94 @@
+{{- $messages := (index .Files 0).Messages -}}
+{{- if gt (len .Files) 1 -}}
+{{- range $file := (slice .Files 1) -}}
+{{- $messages = concat $messages $file.Messages -}}
+{{- end -}}
+{{- end -}}
+{
+  "info": {
+    "name": "{{coalesce (env "POSTMAN_COLLECTION_NAME") "Imported gRPC JSON API"}}",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+    "description": "## Messages\n\n
+{{- range $msg := $messages }}
+{{- $msgDesc := (toJson $msg.Description) }}#### {{ $msg.FullName }}\n\n
+{{- substr 1 (int (sub (len $msgDesc) 1)) $msgDesc }}\n\n
+{{- if $msg.HasFields }}| Field | Type | Description |\n| ----- | ---- | ----------- |\n
+{{- range $f := $msg.Fields }}
+{{- $desc := (toJson $f.Description) }}{{ $descLen := len $desc}}| {{$f.Name}} | {{$f.FullType}} | {{substr 1 (int (sub (len $desc) 1)) $desc}} |\n
+{{- end }}
+{{- end }}\n
+{{- end }}"
+  },
+  "item": [
+{{- $fileLen := len .Files }}
+{{- range $fileIndex, $file := .Files -}}
+{{- if $file.HasServices }}
+    {
+      "name": "{{$file.Name}}",
+      "description": {{$file.Description | toJson }},
+      "item": [
+{{- $serviceLen := len $file.Services}}
+{{- range $serviceIndex, $service := .Services}}
+        {
+          "name": "{{$service.FullName}}",
+          "description": {{$service.Description | toJson }},
+          "items": [
+{{- $methodLen := len $service.Methods}}
+{{- range $methodIndex, $method := $service.Methods}}
+            {
+              "name": "{{$method.Name}}",
+              "request": {
+                "description": {{(printf "%s\n\n\n\nRequest Message: `%s`\n\nResponse Message: `%s`\n" $method.Description $method.RequestFullType $method.ResponseFullType) | toJson }},
+                "method": "POST",
+                "header": [
+                  {
+                    "key": "Content-Type",
+                    "value": "application/grpc+json"
+                  },
+                  {
+                    "key": "Grpc-Insecure",
+                    "value": "{{"{{"}}grpcInsecure{{"}}"}}"
+                  }
+                ],
+                "url": {
+                  "raw": "{{"{{"}}baseURL{{"}}"}}/{{$service.FullName}}/{{$method.Name}}",
+                  "host": [
+                    "{{"{{"}}baseURL{{"}}"}}"
+                  ],
+                  "path": [
+                    "{{$service.FullName}}",
+                    "{{$method.Name}}"
+                  ]
+                },
+                "body": {
+                  "mode": "raw",
+{{- range $msg := $messages -}}
+{{if eq $msg.FullName $method.RequestFullType }}
+                  "raw": "{\n
+{{- $fieldLen := len $msg.Fields -}}
+{{- range $fieldIndex, $field := $msg.Fields -}}
+{{"  \\\""}}{{$field.Name}}\": {{ if eq $field.FullType "string" -}}
+{{- "\\\"\\\"" -}}
+{{- else if eq $field.FullType "bool" -}}
+{{- "true" -}}
+{{- else if (has $field.FullType (list "int" "int32" "int64" "double" "float" "uint32" "uint64" "sint32" "sint64" "fixed32" "fixed64" "sfixed32" "sfixed64")) -}}
+{{- "0" -}}
+{{- else -}}
+{{- "{}" -}}
+{{- end -}}{{if lt $fieldIndex (sub $fieldLen 1)}},\n{{end}}
+{{- end }}\n}"
+                }
+{{- end }}
+{{- end }}
+              }
+            }{{if lt $methodIndex (sub $methodLen 1)}},{{end}}
+{{- end}}
+          ]
+        }{{if lt $serviceIndex (sub $serviceLen 1)}},{{end}}
+      ]
+{{- end}}
+    }{{if (lt $fileIndex (sub $fileLen 1))}}{{if (first (slice $.Files (add $fileIndex 1) 1)).HasServices}},{{end}}{{end}}
+{{- end}}
+{{- end}}
+  ]
+}
