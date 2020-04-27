@@ -8,7 +8,7 @@ GRPC JSON is a proxy which allows HTTP API tools like Postman to interact with g
 
 Configuration of the proxy and its dependencies is a three step process.
 
-Register a JSON codec with the gRPC server. In Go, it can be automatically registered simple by adding the following import:
+1. Register a JSON codec with the gRPC server. In Go, it can be automatically registered simple by adding the following import:
 
 `import _"github.com/jnewmano/grpc-json-proxy/codec"`
 
