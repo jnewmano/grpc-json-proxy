@@ -22,7 +22,7 @@ var (
 )
 
 func main() {
-	addr := flag.String("http-addr", ":7001", "listen addr for HTTP server")
+	addr := flag.String("http-addr", "127.0.0.1:7001", "listen addr for HTTP server")
 
 	flag.Parse()
 
