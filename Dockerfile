@@ -1,18 +1,15 @@
 # Builder
 
-FROM golang AS builder
+FROM golang:1.16 AS builder
 
 WORKDIR /data
-COPY . /data
+COPY . .
 
-RUN go mod download \
-	&& go build
+RUN CGO_ENABLED=0 go build -v
 
 # Runtime
 
-FROM debian:stretch-slim
-
-MAINTAINER vincent <vincent.h.cui@gmail.com>
+FROM scratch
 
 COPY --from=builder /data/grpc-json-proxy /
 

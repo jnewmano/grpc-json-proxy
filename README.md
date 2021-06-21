@@ -25,7 +25,7 @@ If you're using `gogo/protobuf` as your protobuf backend, import the following:
 Other way, you can simply use `grpc-json-proxy` docker image out of the box:
 
 ```bash
-docker run -it -p 7001:7001 vincenthcui/grpc-json-proxy
+docker run -p 7001:7001 jnewmano/grpc-json-proxy
 ```
 
 3. Configure Postman to send requests through the proxy.
