@@ -81,6 +81,14 @@ func (t Transport) RoundTrip(r *http.Request) (*http.Response, error) {
 
 	isGRPC := false
 	if isJSONGRPC(r) {
+		if r.Method != http.MethodPost {
+			buff := bytes.NewBufferString("HTTP method must be POST")
+			resp := &http.Response{
+				StatusCode: 502,
+				Body:       ioutil.NopCloser(buff),
+			}
+			return resp, nil
+		}
 		isGRPC = true
 		r = modifyRequestToJSONgRPC(r)
 	}
