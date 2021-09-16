@@ -14,9 +14,6 @@ import (
 )
 
 var (
-	globalClient    *http.Client
-	globalTLSClient *http.Client
-
 	shutdownTimeout    = time.Second * 3
 	defaultIdleTimeout = time.Second * 60
 )
