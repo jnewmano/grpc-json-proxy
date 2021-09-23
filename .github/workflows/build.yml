@@ -1,0 +1,53 @@
+name: Image
+on:
+  push:
+    branches: [ main ]
+    tags: [ '*' ]
+
+jobs:
+  register:
+    name: Package, Publish, and Register
+    runs-on:
+    - ubuntu-latest
+    steps:
+    - id: checkout
+      uses: actions/checkout@v2
+    - name: Set tag var
+      id: tag
+      shell: bash
+      run: |
+        #!/usr/bin/env bash
+        set -euo pipefail
+
+        TYPE=$(echo ${GITHUB_REF} | cut -d'/' -f2)
+        REF=$(echo ${GITHUB_REF} | cut -d'/' -f3)
+        SHA7=$(echo ${GITHUB_SHA} | cut -c1-7)
+
+        TAG=$REF-${SHA7}
+        if [ "${TYPE}" == "main" ] && [ "${TYPE}" == "tags" ]; then
+          TAG=$REF
+        fi
+
+        echo ::set-output name=tag::$TAG
+
+    - uses: docker/login-action@v1
+      with:
+        registry: docker.io
+        username: ${{ secrets.DOCKER_USERNAME }}
+        password: ${{ secrets.DOCKER_TOKEN }}
+    - id: setup-pack
+      uses: buildpacks/github-actions/setup-pack@v4.3.1
+    - id: package
+      run: |
+        #!/usr/bin/env bash
+        set -euo pipefail
+
+        NAME=$(echo ${GITHUB_REPOSITORY} | cut -d'/' -f2)
+        PACKAGE="${REPO}/${NAME}"
+        TAG=${{ steps.tag.outputs.tag }}
+
+        pack build --builder paketobuildpacks/builder:tiny --publish ${PACKAGE}:${TAG}
+
+      shell: bash
+      env:
+        REPO: docker.io/${{ secrets.DOCKER_USERNAME }}
