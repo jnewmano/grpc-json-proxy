@@ -11,7 +11,6 @@ func handleGRPCResponse(resp *http.Response) (*http.Response, error) {
 
 	// After Body.Read has returned io.EOF, Trailer will contain
 	// any trailer values sent by the server.
-
 	body := bytes.NewBuffer(nil)
 	_, err := io.Copy(body, resp.Body)
 	if err != nil {
