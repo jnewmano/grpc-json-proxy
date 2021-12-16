@@ -3,21 +3,28 @@ package main
 import (
 	"bytes"
 	"encoding/json"
-	"io/ioutil"
+	"io"
 	"net/http"
 )
 
 func handleGRPCResponse(resp *http.Response) (*http.Response, error) {
 
-	code := resp.Header.Get(headerGRPCStatusCode)
-	if code != "0" && code != "" {
-		buff := bytes.NewBuffer(nil)
-		grpcMessage := resp.Header.Get(headerGRPCMessage)
-		j, _ := json.Marshal(grpcMessage)
-		buff.WriteString(`{"error":` + string(j) + ` ,"code":` + code + `}`)
+	code := metadata(resp, headerGRPCStatusCode)
 
-		resp.Body = ioutil.NopCloser(buff)
+	if code != "0" && code != "" {
+		r := struct {
+			Error string `json:"error"`
+			Code  string `json:"code"`
+		}{
+			Error: metadata(resp, headerGRPCMessage),
+			Code:  code,
+		}
+
+		buff := bytes.NewBuffer(nil)
+		_ = json.NewEncoder(buff).Encode(r)
+
 		resp.StatusCode = 500
+		resp.Body = io.NopCloser(buff)
 
 		return resp, nil
 	}
@@ -29,4 +36,12 @@ func handleGRPCResponse(resp *http.Response) (*http.Response, error) {
 
 	return resp, nil
 
+}
+
+func metadata(resp *http.Response, field string) string {
+	v := resp.Header.Get(field)
+	if v != "" {
+		return v
+	}
+	return resp.Trailer.Get(field)
 }

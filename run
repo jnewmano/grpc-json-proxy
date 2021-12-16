@@ -2,6 +2,6 @@
 
 set -e
 
-go build -v -i -o grpc-json-proxy
+go build -v -o grpc-json-proxy
 
 ./grpc-json-proxy
