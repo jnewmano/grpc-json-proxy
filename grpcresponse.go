@@ -9,8 +9,15 @@ import (
 
 func handleGRPCResponse(resp *http.Response) (*http.Response, error) {
 
-	code := metadata(resp, headerGRPCStatusCode)
+	// After Body.Read has returned io.EOF, Trailer will contain
+	// any trailer values sent by the server.
+	body := bytes.NewBuffer(nil)
+	_, err := io.Copy(body, resp.Body)
+	if err != nil {
+		return nil, err
+	}
 
+	code := metadata(resp, headerGRPCStatusCode)
 	if code != "0" && code != "" {
 		r := struct {
 			Error string `json:"error"`
@@ -29,8 +36,10 @@ func handleGRPCResponse(resp *http.Response) (*http.Response, error) {
 		return resp, nil
 	}
 
+	// drop the first 5 bytes of the response body
 	prefix := make([]byte, 5)
-	_, _ = resp.Body.Read(prefix)
+	_, _ = body.Read(prefix)
+	resp.Body = io.NopCloser(body)
 
 	resp.Header.Del(headerContentLength)
 
