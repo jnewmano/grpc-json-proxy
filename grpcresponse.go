@@ -40,6 +40,7 @@ func handleGRPCResponse(resp *http.Response) (*http.Response, error) {
 	// drop the first 5 bytes of the response body
 	prefix := make([]byte, 5)
 	_, _ = body.Read(prefix)
+	resp.Body = io.NopCloser(body)
 
 	resp.Header.Del(headerContentLength)
 
