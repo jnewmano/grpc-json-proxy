@@ -36,7 +36,7 @@ jobs:
         username: ${{ secrets.DOCKER_USERNAME }}
         password: ${{ secrets.DOCKER_TOKEN }}
     - id: setup-pack
-      uses: buildpacks/github-actions/setup-pack@v4.8.0
+      uses: buildpacks/github-actions/setup-pack@v4.8.1
     - id: package
       run: |
         #!/usr/bin/env bash
