@@ -1,6 +1,6 @@
 module github.com/jnewmano/grpc-json-proxy
 
-go 1.15
+go 1.20
 
 require (
 	github.com/gogo/protobuf v1.3.2
